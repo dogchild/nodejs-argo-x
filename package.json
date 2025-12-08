@@ -1,38 +1,16 @@
 {
   "name": "nodejs-argo-x",
-  "version": "2.0.1",
-  "description": "A Node.js tool that provides x subscription links via A.",
+  "version": "1.0.0",
+  "private": true,
   "main": "index.js",
-  "author": "dogchild",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dogchild/nodejs-argo-x.git"
-  },
-  "license": "MIT",
-  "private": false,
   "scripts": {
     "start": "node index.js"
   },
-  "bin": {
-    "nodejs-argo-x": "index.js"
-  },
-  "files": [
-    "index.js",
-    "README.md",
-    "LICENSE",
-    "package.json"
-  ],
-  "keywords": [
-    "x",
-    "a",
-    "c",
-    "subscription"
-  ],
   "dependencies": {
+    "@koa/router": "^13.1.1",
     "axios": "^1.12.2",
     "dotenv": "^17.2.3",
-    "koa": "^3.0.1",
-    "@koa/router": "^13.1.1"
+    "koa": "^3.0.1"
   },
   "engines": {
     "node": ">=18"

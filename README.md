@@ -32,6 +32,9 @@ nodejs-argo-x是一个强大的Argo隧道部署工具，专为PaaS平台和游�
 | NAME | 否 | Vls | 节点名称前缀 |
 | FILE_PATH | 否 | ./tmp | 运行目录 |
 | S_PATH | 否 | ID的值 | 订阅路径 |
+| MLKEM_S | 否 | mlkem768... | vless enc私钥 |
+| MLKEM_C | 否 | mlkem768... | vless enc公钥 |
+| M_AUTH | 否 | ML-KEM-768... | vless enc认证值 |
 
 ## 🌐 订阅地址
 
