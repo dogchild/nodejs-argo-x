@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 
 require('dotenv').config({ override: true });
-const Koa = require('koa');
-const Router = require('@koa/router');
-const app = new Koa();
-const router = new Router();
 const axios = require("axios");
 const os = require('os');
 const fs = require("fs");
@@ -18,7 +14,7 @@ const PORT = process.env.SERVER_PORT || process.env.PORT || 3005;        // http
 const A_DOMAIN = process.env.A_DOMAIN || '';          // 固定连接域名,留空即启用快速连接
 const A_AUTH = process.env.A_AUTH || '';              // 固定连接token,留空即启用快速连接
 const A_PORT = process.env.A_PORT || 8001;            // 固定连接端口,使用token需在对应服务后台设置和这里一致
-const CIP = process.env.CIP || 'cf.877774.xyz';         // 节点优选域名或优选ip  
+const CIP = process.env.CIP || 'cf.877774.xyz';         // 节点优选域名或优选ip
 const CPORT = process.env.CPORT || 443;                   // 节点优选域名或优选ip对应的端口
 const NAME = process.env.NAME || 'Vls';                     // 节点名称
 const MLKEM_S = process.env.MLKEM_S || 'mlkem768x25519plus.native.600s.ugygldXvD2pi5St4XBlF4Cgd-55qGCdaOrcJsxdIR5aHGFeYh-Dm1BDsSluXrHUmscV5n9_hPJ8zPfBP4HEgaA';
@@ -48,17 +44,19 @@ function cleanupOldFiles() {
 
 let subContent = '';
 
-// 根路由
-router.get("/", ctx => {
-  ctx.body = "Hello world!";
+const http = require('http');
+const server = http.createServer((req, res) => {
+  if (req.method === 'GET' && req.url === '/') {
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Hello world!');
+  } else if (req.method === 'GET' && req.url === `/${S_PATH}`) {
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end(subContent);
+  } else {
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Not Found');
+  }
 });
-
-router.get(`/${S_PATH}`, ctx => {
-  ctx.type = 'text/plain; charset=utf-8';
-  ctx.body = subContent;
-});
-
-app.use(router.routes()).use(router.allowedMethods());
 
 // 生成front配置文件
 const config = {
@@ -367,4 +365,4 @@ async function startserver() {
 }
 startserver();
 
-app.listen(PORT, () => console.log(`http server is running on port:${PORT}!`));
+server.listen(PORT, () => console.log(`http server is running on port:${PORT}!`));
