@@ -1,41 +1,27 @@
-# 第一阶段：构建阶段
-FROM node:lts-slim AS builder
+FROM node:lts-alpine
+
+# 安装必要依赖
+# gcompat: 相比 libc6-compat，gcompat 对 glibc 二进制文件（如下载的 front/backend）有更好的兼容性
+# procps: index.js 中使用了 pkill -f，busybox 的 pkill 可能不支持完整正则或行为不同，procps 更稳妥
+# ca-certificates: 确保 HTTPS 请求正常
+# tzdata: 设置时区
+# 其它如 openssl, curl, bash, iproute2, coreutils 均不需要，Node.js 和 busybox 已覆盖功能
+RUN apk add --no-cache gcompat procps ca-certificates tzdata
+
+ENV TZ=Asia/Shanghai
 
 WORKDIR /app
 
-# 先复制依赖文件，利用Docker缓存
+# 复制依赖定义
 COPY package*.json ./
 
 # 安装生产环境依赖
 RUN npm install --only=production
 
-# 第二阶段：运行阶段
-FROM node:lts-slim
-
-# 设置时区（可选，根据需要调整）
-RUN apt-get update && apt-get install -y --no-install-recommends tzdata procps ca-certificates && rm -rf /var/lib/apt/lists/*
-ENV TZ=Asia/Shanghai
-
-WORKDIR /app
-
-# 从构建阶段复制依赖，并设置所有者为内置 node 用户
-COPY --from=builder --chown=node:node /app/node_modules ./node_modules
-
-# 复制应用文件，并设置所有者
-COPY --chown=node:node index.js package.json ./
-
-# 创建 tmp 目录并设置权限
-RUN mkdir -p tmp && chown node:node tmp
-
-# 切换到内置非root用户
-USER node
+# 复制应用代码
+COPY index.js package.json ./
 
 # 暴露端口
 EXPOSE 3005
 
-# 设置健康检查
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD node -e "http.get('http://localhost:' + (process.env.SERVER_PORT || process.env.PORT || 3005), (res) => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
-
-# 设置启动命令
 CMD ["node", "index.js"]
