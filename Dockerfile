@@ -13,30 +13,22 @@ RUN npm install --only=production
 FROM node:lts-slim
 
 # 设置时区（可选，根据需要调整）
+RUN apt-get update && apt-get install -y --no-install-recommends tzdata procps ca-certificates && rm -rf /var/lib/apt/lists/*
 ENV TZ=Asia/Shanghai
-RUN apt-get update && apt-get install -y tzdata && rm -rf /var/lib/apt/lists/*
-
-# 创建非root用户
-RUN groupadd -g 1001 nodejs && \
-    useradd -u 1001 -g nodejs -m node-app
 
 WORKDIR /app
 
-# 从构建阶段复制依赖
-COPY --from=builder /app/node_modules ./node_modules
+# 从构建阶段复制依赖，并设置所有者为内置 node 用户
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
 
-# 复制应用文件
-COPY index.js .
-COPY package.json .
+# 复制应用文件，并设置所有者
+COPY --chown=node:node index.js package.json ./
 
-# 创建并设置tmp目录权限（默认的FILE_PATH）
-RUN mkdir -p /app/tmp && \
-    chown -R node-app:nodejs /app && \
-    chmod -R 755 /app/tmp && \
-    chmod +x index.js
+# 创建 tmp 目录并设置权限
+RUN mkdir -p tmp && chown node:node tmp
 
-# 切换到非root用户
-USER node-app
+# 切换到内置非root用户
+USER node
 
 # 暴露端口
 EXPOSE 3005
