@@ -63,9 +63,9 @@ const config = {
   log: { access: '/dev/null', error: '/dev/null', loglevel: 'none' },
   inbounds: [
     { port: A_PORT, protocol: 'vless', settings: { clients: [{ id: UID, flow: 'xtls-rprx-vision' }], decryption: 'none', fallbacks: [{ dest: 3001 }, { path: "/vla", dest: 3002 }] }, streamSettings: { network: 'tcp' } },
-    { port: 3001, listen: "::1", protocol: 'vless', settings: { clients: [{ id: UID }], decryption: "none" }, streamSettings: { network: "tcp", security: "none" } },
-    { port: 3002, listen: "::1", protocol: 'vless', settings: { clients: [{ id: UID }], decryption: MLKEM_S, selectedAuth: M_AUTH }, streamSettings: { network: "ws", security: "none", wsSettings: { path: "/vla" } }, sniffing: { enabled: true, destOverride: ["http", "tls", "quic"], metadataOnly: false } }
-    //  { port: 3002, listen: "::1", protocol: 'vless', settings: { clients: [{ id: UID }], decryption: "none" }, streamSettings: { network: "ws", security: "none", wsSettings: { path: "/vla" } }, sniffing: { enabled: true, destOverride: ["http", "tls", "quic"], metadataOnly: false } }
+    { port: 3001, listen: "127.0.0.1", protocol: 'vless', settings: { clients: [{ id: UID }], decryption: "none" }, streamSettings: { network: "tcp", security: "none" } },
+    { port: 3002, listen: "127.0.0.1", protocol: 'vless', settings: { clients: [{ id: UID }], decryption: MLKEM_S, selectedAuth: M_AUTH }, streamSettings: { network: "ws", security: "none", wsSettings: { path: "/vla" } }, sniffing: { enabled: true, destOverride: ["http", "tls", "quic"], metadataOnly: false } }
+    //  { port: 3002, listen: "127.0.0.1", protocol: 'vless', settings: { clients: [{ id: UID }], decryption: "none" }, streamSettings: { network: "ws", security: "none", wsSettings: { path: "/vla" } }, sniffing: { enabled: true, destOverride: ["http", "tls", "quic"], metadataOnly: false } }
   ],
   dns: { servers: ["https+local://8.8.8.8/dns-query"] },
   outbounds: [{ protocol: "freedom", tag: "direct" }, { protocol: "blackhole", tag: "block" }]
