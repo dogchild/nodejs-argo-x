@@ -1,16 +1,12 @@
 {
   "name": "nodejs-argo-x",
-  "version": "1.0.0",
   "private": true,
-  "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "@koa/router": "^13.1.1",
     "axios": "^1.12.2",
-    "dotenv": "^17.2.3",
-    "koa": "^3.0.1"
+    "dotenv": "^17.2.3"
   },
   "engines": {
     "node": ">=18"
