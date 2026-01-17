@@ -6,7 +6,7 @@ FROM node:lts-alpine
 # ca-certificates: 确保 HTTPS 请求正常
 # tzdata: 设置时区
 # 其它如 openssl, curl, bash, iproute2, coreutils 均不需要，Node.js 和 busybox 已覆盖功能
-RUN apk add --no-cache gcompat procps ca-certificates tzdata
+RUN apk add --no-cache gcompat procps ca-certificates tzdata bash
 
 ENV TZ=Asia/Shanghai
 
